@@ -57,4 +57,5 @@ document.querySelector("#preview").addEventListener("click", async () => {
     const url = URL.createObjectURL(blob);
     document.querySelector("#audio").src = url;
     document.querySelector("#audio").onload = () => URL.revokeObjectURL(url);
+    document.querySelector("#audio").oncanplaythrough = () => document.querySelector("#audio").play();
 });
