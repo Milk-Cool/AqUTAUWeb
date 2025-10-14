@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>AqUTAUWeb</title>
+        <link href="/style.css" rel="stylesheet">
+        <script src="script.js" defer></script>
+    </head>
+    <body>
+        <h1>AqUTAU generator</h1>
+        <h3>Based on AqUTAU, AquesTalk 10, magic and love &lt;3</h3>
+
+        <label for="name">name: </label><input id="name" maxlength="100" required value="AqUTAU voicebank"><br>
+        <label for="bas">base voice: </label><select id="bas">
+            <option value="0">F1E</option>
+            <option value="1">F2E</option>
+            <option value="2">M1E</option>
+        </select><br>
+        <label for="spd">speed: </label><input id="spd" type="range" min="50" max="200" required value="100"><br>
+        <label for="vol">volume: </label><input id="vol" type="range" min="0" max="300" required value="100"><br>
+        <label for="pit">pitch: </label><input id="pit" type="range" min="20" max="200" required value="100"><br>
+        <label for="acc">accent: </label><input id="acc" type="range" min="0" max="200" required value="100"><br>
+        <label for="lmd">pitch 1: </label><input id="lmd" type="range" min="0" max="200" required value="100"><br>
+        <label for="fsc">pitch 2: </label><input id="fsc" type="range" min="50" max="200" required value="100"><br>
+        <button id="generate">generate</button><br>
+        <h4 id="loading">loading</h4>
+    </body>
+</html>

@@ -1,0 +1,32 @@
+{
+  "name": "aqutauweb",
+  "version": "0.1.0",
+  "description": "AqUTAU-based UTAU voicebank generator in your browser!",
+  "keywords": [
+    "aqutau",
+    "utau"
+  ],
+  "homepage": "https://github.com/Milk-Cool/AqUTAUWeb#readme",
+  "bugs": {
+    "url": "https://github.com/Milk-Cool/AqUTAUWeb/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Milk-Cool/AqUTAUWeb.git"
+  },
+  "license": "MIT",
+  "author": "Milk_Cool",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "aqutau": "^0.1.0",
+    "dotenv": "^17.2.3",
+    "express": "^5.1.0",
+    "express-rate-limit": "^8.1.0"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.3"
+  }
+}
