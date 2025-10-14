@@ -140,3 +140,7 @@ vite.config.ts.timestamp-*
 
 # Package lock
 package-lock.json
+
+# .so files
+*.so
+*.so.*
