@@ -43,4 +43,4 @@ app.post("/", rateLimit({
     }, req.body.name));
 });
 
-app.listen(7077);
+app.listen(process.env.PORT ? parseInt(process.env.PORT) : 7077);
