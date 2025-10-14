@@ -5,6 +5,34 @@ import { rateLimit } from "express-rate-limit";
 
 const aqutau = new AqUTAU(process.env.AQ10_PATH, process.env.DEV_KEY, process.env.USR_KEY);
 
+const invalidNumber = (req, min, max, res, name) => {
+    if(typeof req.body[name] !== "number" || req.body[name] < min || req.body[name] > max) {
+        res.status(400).send("Invalid " + name + "!");
+        return false;
+    }
+    return Math.floor(req.body[name]);
+};
+
+const validMiddleware = nameRequired => (req, res, next) => {
+    if(nameRequired && (typeof req.body.name !== "string" || !req.body.name || req.body.name.length > 100)) return res.status(400).send("Invalid name!");
+    req.body.bas = invalidNumber(req, 0, 2, res, "bas");
+    if(req.body.bas === false) return;
+    req.body.spd = invalidNumber(req, 50, 200, res, "spd");
+    if(req.body.spd === false) return;
+    req.body.vol = invalidNumber(req, 0, 300, res, "vol");
+    if(req.body.vol === false) return;
+    req.body.pit = invalidNumber(req, 20, 200, res, "pit");
+    if(req.body.pit === false) return;
+    req.body.acc = invalidNumber(req, 0, 200, res, "acc");
+    if(req.body.acc === false) return;
+    req.body.lmd = invalidNumber(req, 0, 200, res, "lmd");
+    if(req.body.lmd === false) return;
+    req.body.fsc = invalidNumber(req, 50, 200, res, "fsc");
+    if(req.body.fsc === false) return;
+
+    next();
+};
+
 const app = express();
 app.use(express.json());
 app.use(express.static("public"));
@@ -14,25 +42,8 @@ app.post("/", rateLimit({
     standardHeaders: "draft-8",
     legacyHeaders: true,
     ipv6Subnet: 56
-}), async (req, res) => {
-    // TODO: make this prettier
-    if(typeof req.body.name !== "string" || !req.body.name || req.body.name.length > 100) return res.status(400).send("Invalid name!");
-    if(typeof req.body.bas !== "number" || req.body.bas < 0 || req.body.bas > 2) return res.status(400).send("Invalid bas!");
-    req.body.bas = Math.floor(req.body.bas);
-    if(typeof req.body.spd !== "number" || req.body.spd < 50 || req.body.spd > 200) return res.status(400).send("Invalid spd!");
-    req.body.spd = Math.floor(req.body.spd);
-    if(typeof req.body.vol !== "number" || req.body.vol < 0 || req.body.vol > 300) return res.status(400).send("Invalid vol!");
-    req.body.vol = Math.floor(req.body.vol);
-    if(typeof req.body.pit !== "number" || req.body.pit < 20 || req.body.pit > 200) return res.status(400).send("Invalid pit!");
-    req.body.pit = Math.floor(req.body.pit);
-    if(typeof req.body.acc !== "number" || req.body.acc < 0 || req.body.acc > 200) return res.status(400).send("Invalid acc!");
-    req.body.acc = Math.floor(req.body.acc);
-    if(typeof req.body.lmd !== "number" || req.body.lmd < 0 || req.body.lmd > 200) return res.status(400).send("Invalid lmd!");
-    req.body.lmd = Math.floor(req.body.lmd);
-    if(typeof req.body.fsc !== "number" || req.body.fsc < 50 || req.body.fsc > 200) return res.status(400).send("Invalid fsc!");
-    req.body.fsc = Math.floor(req.body.fsc);
-
-    res.header("content-disposition", "attachment; filename=\"" + req.body.name + ".zip\"").send(await aqutau.generateVoicebankZIP({
+}), validMiddleware(true), async (req, res) => {
+    res.header("content-type", "application/zip").header("content-disposition", "attachment; filename=\"" + req.body.name + ".zip\"").send(await aqutau.generateVoicebankZIP({
         bas: req.body.bas,
         spd: req.body.spd,
         vol: req.body.vol,
@@ -41,6 +52,23 @@ app.post("/", rateLimit({
         lmd: req.body.lmd,
         fsc: req.body.fsc
     }, req.body.name));
+});
+app.post("/sample", rateLimit({
+    windowMs: 3 * 60 * 1000,
+    limit: 15,
+    standardHeaders: "draft-8",
+    legacyHeaders: true,
+    ipv6Subnet: 56
+}), validMiddleware(false), (req, res) => {
+    res.header("content-type", "audio/wav").header("content-disposition", "attachment; filename=\"sample.wav\"").send(aqutau.generateSound("ありがとうございます", {
+        bas: req.body.bas,
+        spd: req.body.spd,
+        vol: req.body.vol,
+        pit: req.body.pit,
+        acc: req.body.acc,
+        lmd: req.body.lmd,
+        fsc: req.body.fsc
+    }));
 });
 
 app.listen(process.env.PORT ? parseInt(process.env.PORT) : 7077);
